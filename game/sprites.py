@@ -12,7 +12,7 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.Player_Img
-        self.unrotimg= game.Player_Img
+        game.player_img
         self.walking=False
         self.dashing=False
         #self.image.fill(BLUE)
