@@ -13,13 +13,13 @@ class Player(pg.sprite.Sprite):
         self.game = game
         self.image = game.Player_Img
         self.unrotimg= game.Player_Img
-        game.Player_Img
         self.walking=False
         self.dashing=False
         #self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.vel=vec(0,0)
-        self.pos=vec(x,y)*TILESIZE               
+        self.pos=vec(x,y)*TILESIZE   
+        self.rot=0            
 
 
     def keys_press (self):
@@ -45,12 +45,16 @@ class Player(pg.sprite.Sprite):
         #self.image = pg.transform.rotate(self.unrotated_image, AnDeg)
 
         ###############################################################
+
+        mouse_dir = vec(pg.mouse.get_pos()) - vec(self.camera.apply(self.player.pos).center)
+        self.rot = mouse_dir.angle_to(vec(1, 0))
         
-        m_x, m_y = pg.mouse.get_pos()
-        rel_x, rel_y = m_x - self.x, m_y - self.y
-        angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
-        self.image = pg.transform.rotate(self.unrotimg, int(angle))
-        self.rect = self.image.get_rect(center=self.pos)
+        ##############################################################
+        #m_x, m_y = pg.mouse.get_pos()
+        #rel_x, rel_y = m_x - self.x, m_y - self.y
+        #angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
+        #self.image = pg.transform.rotate(self.unrotimg, int(angle))
+        #self.rect = self.image.get_rect(center=self.pos)
 
     
     def collide_with_walls(self, dir):
@@ -80,7 +84,9 @@ class Player(pg.sprite.Sprite):
         self.collide_with_walls('x')
         self.rect.y=self.pos.y
         self.collide_with_walls('y')
-        self.rotate()
+        self.rot(self.rot + self.rot_speed + self.game.dt) %360
+        self.image = pg.transform.rotate(self.game.Player_Img, self.rot)
+        self.rect.center = self.pos
         #self.screen.blit(self.image, (self.rect.x, self.rect.y))
 
         if pg.sprite.spritecollideany(self, self.game.walls):
